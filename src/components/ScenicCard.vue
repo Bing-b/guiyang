@@ -124,11 +124,11 @@ const randomRotate = computed(() => {
     </div>
 
     <!-- 更多方案弹窗 -->
-    <van-popup v-model:show="showOptions" round position="bottom" teleport="body" class="p-6 pb-12 scrapbook-bg max-h-[85vh] overflow-y-auto">
-      <h3 class="text-[22px] font-black text-[#1C1C1E] mb-8 text-center border-b-2 border-dashed border-[#F69022]/30 pb-4">
+    <van-popup v-model:show="showOptions" round closeable position="bottom" teleport="body" class="p-6 pb-8 scrapbook-bg max-h-[85vh] overflow-y-auto flex flex-col">
+      <h3 class="text-[22px] font-black text-[#1C1C1E] mb-4 text-center border-b-2 border-dashed border-[#F69022]/30 pb-4 shrink-0 mt-2">
         🎡 更多游玩方案
       </h3>
-      <div class="space-y-6">
+      <div class="space-y-6 flex-1 overflow-y-auto mb-6 pt-4 px-1">
         <div v-for="(opt, idx) in options" :key="idx" class="bg-white/80 p-4 pt-5 rounded-2xl border-2 border-[#42B029]/30 shadow-sm relative">
           <div class="absolute -top-3 left-4 bg-[#42B029] text-white px-3 py-0.5 rounded-md text-[13px] font-bold shadow-sm whitespace-nowrap">
             {{ opt.title }}
@@ -136,6 +136,13 @@ const randomRotate = computed(() => {
           <p class="text-[15px] font-bold text-[#333] leading-[1.7]" v-html="'· ' + highlightText(opt.detail)"></p>
         </div>
       </div>
+      
+      <button 
+        @click="showOptions = false"
+        class="w-full shrink-0 bg-[#F69022] active:scale-95 transition-transform text-white font-black text-[16px] py-3 rounded-xl shadow-[0_4px_12px_rgba(246,144,34,0.3)] mt-auto"
+      >
+        我知道啦
+      </button>
     </van-popup>
     
   </div>
