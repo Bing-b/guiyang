@@ -105,6 +105,7 @@ const animateCards = () => {
                   :description="activity.description"
                   :index="index * 10 + aIndex + 1"
                   :is-left="aIndex % 2 === 0"
+                  :options="activity.options"
                 />
               </div>
             </div>

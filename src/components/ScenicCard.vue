@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { openAmap } from '../utils/amap';
 
 const props = defineProps<{
@@ -8,11 +8,14 @@ const props = defineProps<{
   description: string;
   index: number;
   isLeft: boolean;
+  options?: {title: string, detail: string}[];
 }>();
 
 const handleNavigate = () => {
   openAmap(props.location);
 }
+
+const showOptions = ref(false);
 
 // 动态导入所有本地图片
 const images = import.meta.glob('../assets/images/*', { eager: true, import: 'default' });
@@ -33,20 +36,24 @@ const displayImage = computed(() => {
   return null;
 });
 
-// 提取关键词并高亮不同颜色，适配手账风格
-const formattedDescription = computed(() => {
-  let text = props.description;
+const highlightText = (text: string) => {
   const transportRegex = /(地铁.*?号线|地铁|公交车|打车|高铁|S1 线城际|索道|步行)/g;
-  const timeRegex = /(\d{1,2}:\d{2}|\d+(?:\.\d+)?(?:min|分钟|h|小时|～\d+h))/g;
+  const timeRegex = /(\d{1,2}:\d{2}|\d+(?:\.\d+)?(?:min|分钟|h|小时|～\d+h|元\/人))/g;
   const actionRegex = /(入住|早餐|午餐|晚餐|宵夜|方案 ?[A-C]?)/g;
   const poiRegex = /(南门进|南门出|东门进|南门|东门|弘福寺|猕猴步道|熊猫馆|动物园|瞰筑亭|黔灵湖|麒麟洞|中山西路站 F 口|小孟工业园|大十字|国际生态会议中心|灵长猴区|文昌阁|电台街|虎门巷|主景区|东山寺)/g;
   
-  text = text.replace(transportRegex, '<span class="text-[#007AFF] font-black">$1</span>'); 
-  text = text.replace(timeRegex, '<span class="text-[#FF4500] font-black">$1</span>');     
-  text = text.replace(poiRegex, '<span class="text-[#42B029] font-black">$1</span>');      
-  text = text.replace(actionRegex, '<span class="text-[#9932CC] font-black">$1</span>');    
+  let formatted = text;
+  formatted = formatted.replace(transportRegex, '<span class="text-[#007AFF] font-black">$1</span>'); 
+  formatted = formatted.replace(timeRegex, '<span class="text-[#FF4500] font-black">$1</span>');     
+  formatted = formatted.replace(poiRegex, '<span class="text-[#42B029] font-black">$1</span>');      
+  formatted = formatted.replace(actionRegex, '<span class="text-[#9932CC] font-black">$1</span>');    
   
-  return text;
+  return formatted;
+};
+
+// 提取关键词并高亮不同颜色
+const formattedDescription = computed(() => {
+  return highlightText(props.description);
 });
 
 // 随机旋转角度
@@ -89,21 +96,47 @@ const randomRotate = computed(() => {
     
     <!-- 描述文字与时间 -->
     <div class="mt-12 mb-4 px-2 text-center w-full max-w-[300px]">
-      <div class="inline-block bg-white/80 backdrop-blur border-2 border-dashed border-[#F69022] rounded-2xl px-4 pt-5 pb-3 shadow-sm relative">
+      <div class="inline-block bg-white/80 backdrop-blur border-2 border-dashed border-[#F69022] rounded-2xl px-4 pt-5 pb-3 shadow-sm relative w-full">
         <div class="absolute -top-3 left-1/2 -translate-x-1/2 text-[#F69022] bg-[#FDF9EC] px-2 font-black text-[13px] whitespace-nowrap">
           🕒 {{ time }}
         </div>
         <p class="text-[#333] font-bold text-[15px] leading-[1.7] text-left" v-html="'· ' + formattedDescription"></p>
         
-        <button 
-          @click="handleNavigate"
-          class="mt-3 inline-flex items-center justify-center bg-[#F69022] active:scale-95 transition-transform text-white font-black text-[14px] px-5 py-1.5 rounded-full shadow-[0_4px_10px_rgba(246,144,34,0.4)]"
-        >
-          <van-icon name="guide-o" class="mr-1.5 text-[16px]" />
-          出发
-        </button>
+        <div class="mt-4 flex gap-2 justify-center flex-wrap">
+          <button 
+            @click="handleNavigate"
+            class="inline-flex items-center justify-center bg-[#F69022] active:scale-95 transition-transform text-white font-black text-[14px] px-5 py-1.5 rounded-full shadow-[0_4px_10px_rgba(246,144,34,0.4)]"
+          >
+            <van-icon name="guide-o" class="mr-1.5 text-[16px]" />
+            出发
+          </button>
+
+          <button 
+            v-if="options && options.length > 0"
+            @click="showOptions = true"
+            class="inline-flex items-center justify-center bg-white border-2 border-[#F69022] active:scale-95 transition-transform text-[#F69022] font-black text-[14px] px-4 py-1.5 rounded-full shadow-sm"
+          >
+            <van-icon name="apps-o" class="mr-1 text-[16px]" />
+            更多方案
+          </button>
+        </div>
       </div>
     </div>
+
+    <!-- 更多方案弹窗 -->
+    <van-popup v-model:show="showOptions" round position="bottom" teleport="body" class="p-6 pb-12 scrapbook-bg max-h-[85vh] overflow-y-auto">
+      <h3 class="text-[22px] font-black text-[#1C1C1E] mb-8 text-center border-b-2 border-dashed border-[#F69022]/30 pb-4">
+        🎡 更多游玩方案
+      </h3>
+      <div class="space-y-6">
+        <div v-for="(opt, idx) in options" :key="idx" class="bg-white/80 p-4 pt-5 rounded-2xl border-2 border-[#42B029]/30 shadow-sm relative">
+          <div class="absolute -top-3 left-4 bg-[#42B029] text-white px-3 py-0.5 rounded-md text-[13px] font-bold shadow-sm whitespace-nowrap">
+            {{ opt.title }}
+          </div>
+          <p class="text-[15px] font-bold text-[#333] leading-[1.7]" v-html="'· ' + highlightText(opt.detail)"></p>
+        </div>
+      </div>
+    </van-popup>
     
   </div>
 </template>
