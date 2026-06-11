@@ -36,17 +36,17 @@ const displayImage = computed(() => {
       return images[path] as string;
     }
   }
-  if (loc.includes("肠旺面") && images["../assets/images/肠旺面.png"])
-    return images["../assets/images/肠旺面.png"] as string;
-  if (loc.includes("烙锅") && images["../assets/images/大十字吃一烙锅.png"])
-    return images["../assets/images/大十字吃一烙锅.png"] as string;
+  if (loc.includes("肠旺面") && images["../assets/images/肠旺面.webp"])
+    return images["../assets/images/肠旺面.webp"] as string;
+  if (loc.includes("烙锅") && images["../assets/images/大十字吃一烙锅.webp"])
+    return images["../assets/images/大十字吃一烙锅.webp"] as string;
   if (
     loc.includes("锦江都城酒店") &&
-    images["../assets/images/贵阳北站锦江都城酒店.png"]
+    images["../assets/images/贵阳北站锦江都城酒店.webp"]
   )
-    return images["../assets/images/贵阳北站锦江都城酒店.png"] as string;
-  if (loc.includes("市区") && images["../assets/images/贵阳市区.png"])
-    return images["../assets/images/贵阳市区.png"] as string;
+    return images["../assets/images/贵阳北站锦江都城酒店.webp"] as string;
+  if (loc.includes("市区") && images["../assets/images/贵阳市区.webp"])
+    return images["../assets/images/贵阳市区.webp"] as string;
   return null;
 });
 
@@ -92,10 +92,13 @@ const randomRotate = computed(() => {
 </script>
 
 <template>
-  <div class="relative w-full flex flex-col items-center">
+  <div 
+    class="relative w-full flex flex-col items-center md:flex-row md:items-center md:justify-between md:max-w-[760px] md:mx-auto"
+    :class="isLeft ? 'md:flex-row' : 'md:flex-row-reverse'"
+  >
     <!-- 照片边框样式 -->
     <div
-      class="relative bg-white p-2 shadow-[4px_6px_15px_rgba(0,0,0,0.15)] transition-transform duration-300 hover:scale-105 z-10 w-full max-w-[280px]"
+      class="relative bg-white p-2 shadow-[4px_6px_15px_rgba(0,0,0,0.15)] transition-transform duration-300 hover:scale-105 z-10 w-full max-w-[280px] md:max-w-[340px] md:w-[calc(50%-40px)] shrink-0"
       :style="`border: 3.5px solid #F69022; transform: rotate(${randomRotate}deg)`"
     >
       <!-- 第X站 标签 -->
@@ -132,7 +135,7 @@ const randomRotate = computed(() => {
     </div>
 
     <!-- 描述文字与时间 -->
-    <div class="mt-12 mb-4 px-2 text-center w-full max-w-[300px]">
+    <div class="mt-12 md:mt-0 mb-4 px-2 text-center w-full max-w-[300px] md:max-w-none md:w-[calc(50%-40px)]">
       <div
         class="inline-block bg-white/80 backdrop-blur border-2 border-dashed border-[#F69022] rounded-2xl px-4 pt-5 pb-3 shadow-sm relative w-full"
       >
@@ -174,7 +177,7 @@ const randomRotate = computed(() => {
       closeable
       position="bottom"
       teleport="body"
-      class="p-6 pb-8 scrapbook-bg max-h-[85vh] overflow-y-auto flex flex-col"
+      class="p-6 pb-8 scrapbook-bg max-h-[85vh] overflow-y-auto flex flex-col md:max-w-md md:left-1/2 md:-translate-x-1/2 md:rounded-t-2xl md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:rounded-b-2xl md:h-auto"
     >
       <h3
         class="text-[22px] font-black text-[#1C1C1E] mb-4 text-center border-b-2 border-dashed border-[#F69022]/30 pb-4 shrink-0 mt-2"

@@ -73,7 +73,7 @@ const animateCards = () => {
         :key="day.day" 
         :title="`Day ${day.day}`"
       >
-        <div class="p-4 pt-6 overflow-hidden">
+        <div class="p-4 pt-6 overflow-hidden md:max-w-4xl md:mx-auto">
           <div class="mb-10 text-center relative">
             <h2 class="text-[32px] font-black text-[#1C1C1E] tracking-tight relative inline-block z-10">
               {{ day.date }}
@@ -94,11 +94,11 @@ const animateCards = () => {
             >
               <!-- 居中地图图钉 -->
               <div class="absolute left-1/2 -translate-x-1/2 -top-6 w-8 h-8 flex items-center justify-center z-30 drop-shadow-md">
-                <van-icon name="location" class="text-[#F69022] text-[32px]" />
+                <van-icon name="location" class="text-[#F69022] text-[32px] md:text-[40px] md:bg-[#FDF9EC] md:rounded-full md:p-1" />
               </div>
               
               <!-- 卡片本体，通过 isLeft 参数交替倾斜 -->
-              <div class="w-full px-2" :class="aIndex % 2 === 0 ? 'ml-0 md:mr-[10%]' : 'mr-0 md:ml-[10%]'">
+              <div class="w-full px-2 md:px-8 flex justify-center">
                 <ScenicCard 
                   :time="activity.time"
                   :location="activity.location"
